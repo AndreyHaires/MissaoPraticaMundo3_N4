@@ -27,7 +27,12 @@ public abstract class AbstractFacade<T> {
      * @param entity A entidade a ser criada
      */
     public void create(T entity) {
-        getEntityManager().persist(entity);
+        try {
+            getEntityManager().persist(entity);
+        } catch (Exception e) {
+            // Adicione um log de exceção
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -35,7 +40,12 @@ public abstract class AbstractFacade<T> {
      * @param entity A entidade a ser atualizada
      */
     public void edit(T entity) {
-        getEntityManager().merge(entity);
+        try {
+            getEntityManager().merge(entity);
+        } catch (Exception e) {
+            // Adicione um log de exceção
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -43,7 +53,12 @@ public abstract class AbstractFacade<T> {
      * @param entity A entidade a ser removida
      */
     public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+        try {
+            getEntityManager().remove(getEntityManager().merge(entity));
+        } catch (Exception e) {
+            // Adicione um log de exceção
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -59,6 +74,8 @@ public abstract class AbstractFacade<T> {
      * Retorna todas as entidades do banco de dados.
      * @return Uma lista de todas as entidades
      */
+    
+    @SuppressWarnings("unchecked")
     public List<T> findAll() {
         jakarta.persistence.criteria.CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(entityClass);
         cq.select(cq.from(entityClass));
@@ -70,6 +87,7 @@ public abstract class AbstractFacade<T> {
      * @param range Um array de dois elementos representando o intervalo
      * @return Uma lista de entidades no intervalo especificado
      */
+    
     public List<T> findRange(int[] range) {
         jakarta.persistence.criteria.CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(entityClass);
         cq.select(cq.from(entityClass));
